@@ -1,0 +1,91 @@
+---
+title: "R Analisis Numerico TALLER 2 Eddy Herrera Daza"
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+###Ricardo Riscanevo 
+###Ortegon Johan
+####Ejercicios
+```{r}
+#install.packages("BB")
+library(pracma)
+library(Matrix)
+library(BB)
+```
+
+1. Para el siguiente ejercico, instale el paquete "pracma" 
+a. Revise las siguientes funciones con la matriz del ejercicio 2
+b. Evalue la matriz de transición para el método $\textbf{SOR}$
+
+#####Solucion a)
+```{r}
+A = matrix(c(-8.1, -7, 6.123, -2, -1, 4,
+-3, -1, 0, -1, -5, 0.6,
+-1, 0.33, 6, 1/2), nrow=4, byrow=TRUE)
+A
+D1<-eye(4, 4) #FUNCION PARA CREAR UNA MATRIZ BASICA
+D1
+D2<-ones(4, 4) #FUNCION PARA CREAR UNA MATRIZ LLENA DE UNOS
+D2
+D3<-zeros(4, 4) #FUNCION PARA CREAR UNA MATRIZ DE CEROS
+D3
+```
+#####Solucion b)
+######Elementos notacionales:
+
+###### L = Matriz triangular inferior en la diagonal principal y los otros elementos iguales a la matriz A
+###### D = Matriz diagonal con elementos iguales a los elementos de la matriz diagonal principal de A 
+###### S = Matriz triangular superior con sus elementos iguales alos elementos respectivos de A. 
+###### U = Matriz triangular superior con ceros en la diagonal principal y los otros elementos y iguales a A
+
+###### Metodo de gauss Seidel: 
+###### A = matriz que se puede re-escribir como: A = L + D + U
+
+###### Metodo de relajacion:
+###### A = matriz que se puede re-escribir como: A = L + D + S - D
+
+###### Si AX = B
+###### (L + D + S - D)X = B
+###### XL + XD + XS - XD = B
+###### XD = B + XD - XS - XL
+###### XDD^-1 = BD^-1 + XDD^-1 - XSD^-1 -XLD^-1
+###### X = X + BD^-1 - XSD^-1 - XLD^-1
+###### Convergencia de los metodos iterativos para sistemas lineales: 
+###### X = C + Tx 
+###### C = Vector
+###### T = Matriz de transicion
+###### X - X^(k+1) = T(X-X^k)
+###### E^(k+1) = TE^k
+###### T = E^(k+1)/E^k
+###### Error de truncamiento: E^(k) = X-X^k --> E^(k+1) = X-X^(k+1) 
+#####***********  DESARROLLO DE LA MATRIZ DE TRANSACION PARA EL METODO DE RELAJACION ***********
+###### AX = B --> A=L+D+S-D --> X=X+WD^(-1)B-WD^(-1)LX-WD^(-1)SX --> E^(k+1) = TE^K --> T = (I+WD^(-1)L)^-1(I-wD^(-1)S) 
+```{r}
+D = diag(diag(A^-1))
+D
+U = A
+L = A
+L[lower.tri(L,diag=TRUE)] <- 0
+L
+U[upper.tri(U, diag = TRUE)] <- 0
+U
+sum = L+U
+sum
+solucion = (-solve(D))
+solucion
+
+T = (solucion)%*%(sum)
+print(T)
+
+print (norm(T,"F"))
+```
+
+
+
+
+
+
+

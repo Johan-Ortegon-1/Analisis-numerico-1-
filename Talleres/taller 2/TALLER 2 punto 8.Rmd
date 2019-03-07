@@ -1,0 +1,87 @@
+###Ortegon Johan 
+###Ricardo Riscanevo
+####Ejercicio 8
+
+```{r}
+#install.packages("BB")
+library(pracma)
+library(Matrix)
+library(BB)
+```
+
+Parte 1 del ejercicio: Demostrar $T=(-D^{-1}U)(I+LD^{-1})^{-1}$
+
+Elementos notacionales
+
+
+L = Matriz triangular inferior en la diagonal principal y los otros elementos iguales a la matriz A
+
+D = Matriz diagonal con elementos iguales a los elementos de la matriz diagonal principal de A 
+
+U = Matriz triangular superior con ceros en la diagonal principal y los otros elementos y iguales a A
+
+E = Error de truncamiento
+
+Si $AX = B$
+
+$A$ = matriz que se puede re-escribir como: $A = L+D+U$
+
+Entonces -> $(L+D+U)X = B$
+
+Aplicando distributiva -> $XL + XD + XU = B$
+
+Despejando -> $XD = B - XU - XL$
+
+Dividiendo la expresion por $D$ -> $XDD^{-1}=BD^{-1}-XUD^{-1}-XLD^{-1}$
+
+Gauss es iterativo -> $X^{K+1} = BD^{-1}-X^{k+1}LD^{-1}-X^{k}UD^{-1}$
+
+$\textbf{Teniendo presente}$: $E^{k} = X-X^{k}$ y $E^{k+1} = X - X^{k}$
+
+Desde $X=G(X)$(sistema recurrente como el punto fijo X = G(X)): $X = C+TX$
+
+Donde $C$ es un vector y $T$ la matriz de transicion
+
+Con la forma iterativa -> $X^{k+1} = C+TX^{k}$ 
+
+Obteniendo el error de truncamiento -> $X-X^{k} = C+T(X-X^{k})$
+
+Dadas las defincion de error -> $E^{k+1}=TE^{K}$ (Defincion de convergencia)
+
+Despejado T -> $T = E^{k+1}/E^{K}$
+
+$\textbf{Continuando con}$: $X^{K+1} = BD^{-1}-X^{k+1}LD^{-1}-X^{k}UD^{-1}$
+
+Aplicando deficion de convergencia -> $X-X^{k+1}=-D^{-1}L(X-X^{k+1})-D^{-1}U(X-X^{k+1})$
+
+Reemplazando por $E^{k+1}$ -> $E^{k+1} = -D^{-1}LE^{k+1}-D^{-1}E^{k}$
+
+$E^{k+1}(I+D^{-1}L) = -D^{-1}UE^{k}$
+
+$E^{k+1} =(I+D^{-1}L)^{-1}(D^{-1}U)E^{k}$
+                              
+$E^{k+1}/E^{k} =(I+D^{-1}L)^{-1}(D^{-1}U)$ -> $T=(I+D^{-1}L)^{-1}(D^{-1}U)$
+
+##Pruebas: 
+
+```{r}
+A = matrix(c(-8.1, -7, 6.123, -2, -1, 4,
+-3, -1, 0, -1, -5, 0.6,
+-1, 0.33, 6, 1/2), nrow=4, byrow=TRUE)
+A
+N <- 3
+A <- Diag(rep(3,N)) + Diag(rep(-2, N-1), k=-1) + Diag(rep(-1, N-1), k=1)
+x0 <- rep(0, N)
+b = c(4,5,6)
+itersolve(A, b, tol=1e-9 , method = "Gauss-Seidel")
+D = diag(A) * diag(nrow=N)
+luA = expand(lu(A))
+L = luA$L
+U = luA$U
+#Matriz de transición
+T = (-(D^-1)*U)*(diag(nrow=N) + (D^-1*L)^-1)
+T
+```
+
+
+

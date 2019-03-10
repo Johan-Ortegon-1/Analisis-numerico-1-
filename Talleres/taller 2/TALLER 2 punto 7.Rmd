@@ -1,0 +1,65 @@
+###Ortegon Johan 
+####Ejercicio 7
+
+7.
+a. Determinar numericamente la interseccion entre la circunferencia $x^2 + y^2 = 1$ y la recta $y = x$. Usamos una aproximaciC3n inicial $(1,1)$. Utilice el paquete BB y la funcion BBsolve() del paquete,grafique la solucion
+#x^2+y^2-1=0 --> y^2 = x^2+1
+```{r, echo=T}
+library(BB)
+interseccion = function(x){
+n = length(x)
+F = rep(NA, n)
+F[1] = x[1] - x[2]
+F[2] = x[1]^2 + x[2]^2 -1
+F
+}
+p0 = c(1,1)
+sol = BBsolve(par = p0, fn=interseccion)
+sol$par
+funcion1 <- function(x) sqrt(1 - x^2)
+funcion2 <- function(x) x
+matplot(x,cbind(funcion1(x),funcion2(x)),col=c("blue","red"))
+plot(sol$par)
+sol$par
+```
+b Analizar y comentar el siguinte codigo
+```{r, echo=T}
+trigexp = function(x) {
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#"n" se le asigna el vaor dado antes de iniciar la funcion
+n = length(x)
+#cat("El valor de n es:",n)
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#Se llena F de n elementos NA (Vacios)
+F = rep(NA, n)
+#cat("Que es F?: ",F)
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#Se ingresa la ecuacion 1
+F[1] = 3*x[1]^2 + 2*x[2] - 5 + sin(x[1] - x[2]) * sin(x[1] + x[2])
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#Se genera una secuaencia desde 2 hasta n-1
+tn1 = 2:(n-1)
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#Se ingresan ((n-1)-2) ecuaciones con los valores de la secuancia anterior
+F[tn1] = -x[tn1-1] * exp(x[tn1-1] - x[tn1]) + x[tn1] *
+( 4 + 3*x[tn1]^2) + 2 * x[tn1 + 1] + sin(x[tn1] -
+x[tn1 + 1]) * sin(x[tn1] + x[tn1 + 1]) - 8
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#Se ingresa la ecuacion correspondiente a n 
+F[n] = -x[n-1] * exp(x[n-1] - x[n]) + 4*x[n] - 3
+F
+}
+n = 11
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#runif()
+#Funcion que se usa para generar una cantidad "n" de valores aleatoreos
+p0 = runif(n) # n initial random starting guesses
+p0
+#///////////////////////////////////////////////////////////////////////////////////////////////////////
+#BBsolve() es:
+#Funcion para resolver un  sistema de ecuaciones no lineales,
+#donde "par" es un argumento de valor real que indica la estimacion incial del sistema para la ecuacion
+#y "fn" es el sistema de ecuaciones no lineales a resolver 
+sol = BBsolve(par=p0, fn=trigexp)
+sol$par
+```

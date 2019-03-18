@@ -1,0 +1,111 @@
+---
+title: "Explicacion y Practicas de interpolacion"
+output: html_notebook
+---
+#Metodo por polinomios
+##Condiciones: 
+Estos polinomios se determinan exigiendo que coincidan con la funcion en alguno de los valores
+tabulados.
+
+#Interpolacion polinomias lineales
+Dados los siguientes datos de la temperatura, interpole de forma lineal:
+```{r}
+hora <- c(6,8,10,12,14,16,18,20)
+grados <- c(7,9,12,18,21,19,15,10)
+hora[1]
+matriz = matrix(c(1, hora[4],
+                  1, hora[5]), nrow = 2, byrow=TRUE)
+matriz
+b <- c(grados[4],grados[5])
+solucion <- qr.solve(matriz,b)
+solucion
+polinomioSolucion <- function(x) solucion[1]+x*solucion[2]
+plot(polinomioSolucion, col="red")
+par(new=TRUE)
+plot(hora, grados, col="green")
+```
+#Interpolacion polinomias cuadratica
+Dados los siguientes datos de la temperatura, interpole de forma cuadratica:
+```{r}
+hora <- c(6,8,10,12,14,16,18,20)
+grados <- c(7,9,12,18,21,19,15,10)
+
+datosX = hora[3:5]
+datosY = grados[3:5]
+polyAjuste = poly.calc(datosX,datosY)
+polyAjuste
+plot(polyAjuste,col="red",xlim = c(0,30),ylim = c(0,30)) # Representación con puntos
+par(new=TRUE)
+plot(hora, grados, col="green")
+
+matriz = matrix(c(1,hora[3],hora[3]^2,
+                  1,hora[4],hora[4]^2,
+                  1,hora[5],hora[5]^2), nrow = 3, byrow=TRUE)
+matriz
+b <- c(grados[3],grados[4],grados[5])
+solucion <- qr.solve(matriz,b)
+solucion[1]
+solucion[2]
+solucion[3]
+cond(matriz)
+#polinomioSolucion2 <- function(x){solucion[1] + x*solucion[2] + solucion[3]*x^2} 
+polinomioSolucion2 <- function(x){-63+x*11.35-(x^2)*0.37} 
+polinomioSolucion2(2)
+plot(polinomioSolucion2,col = "red", xlim = c(0,30), ylim = c(0,30))
+par(new=TRUE)
+plot(hora, grados, col="green", , xlim = c(0,30), ylim = c(0,30))
+```
+
+
+#Interpolacion polinomias de grado 7
+Dados los siguientes datos de la temperatura, interpole con grado 7:
+```{r}
+hora <- c(6,8,10,12,14,16,18,20)
+grados <- c(7,9,12,18,21,19,15,10)
+matriz = matrix(c(1,hora[1],hora[1]^2,hora[1]^3,hora[1]^4,hora[1]^5,hora[1]^6,hora[1]^7,
+                  1,hora[2],hora[2]^2,hora[2]^3,hora[2]^4,hora[2]^5,hora[2]^6,hora[2]^7,
+                  1,hora[3],hora[3]^2,hora[3]^3,hora[3]^4,hora[3]^5,hora[3]^6,hora[3]^7,
+                  1,hora[4],hora[4]^2,hora[4]^3,hora[4]^4,hora[4]^5,hora[4]^6,hora[4]^7,
+                  1,hora[5],hora[5]^2,hora[5]^3,hora[5]^4,hora[5]^5,hora[5]^6,hora[5]^7,
+                  1,hora[6],hora[6]^2,hora[6]^3,hora[6]^4,hora[6]^5,hora[6]^6,hora[6]^7,
+                  1,hora[7],hora[7]^2,hora[7]^3,hora[7]^4,hora[7]^5,hora[7]^6,hora[7]^7), nrow=7,byrow=TRUE)
+matriz
+b <- c(grados[1],grados[2],grados[3],grados[4],grados[5],grados[6],grados[7])
+solucion <- qr.solve(matriz,b)
+solucion
+polinomioSolucion <- function(x) solucion[1]+x*solucion[2]+solucion[3]*x^2+solucion[4]*x^3+solucion[5]*x^4+solucion[6]*x^5+
+                                  solucion[7]*x^6+solucion[8]*x^7
+plot(polinomioSolucion, col="red", xlim = c(0,30), ylim = c(0,30))
+par(new=TRUE)
+plot(hora, grados, col="green", xlim = c(0,30), ylim = c(0,30))
+```
+```{r}
+# Instalar el paquete PolynomF
+# install.packages("PolynomF")
+require(PolynomF)
+x = c( 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0) # n+1 = 11
+y = c(0.31, 0.32, 0.33, 0.34, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5)
+# Polinomio de ajuste (polinomio interpolante en este caso)
+datx = x[2:5]; daty = y[2:5]
+polyAjuste = poly.calc(datx,daty)
+polyAjuste
+#-0.1 + 4.433333*x - 15*x^2 + 16.66667*x^3
+plot(datx,daty, pch=19, cex=1, col = "red", asp=1) # Representación con puntos
+curve(polyAjuste,add=T) # Curva de ajuste (polinomio interpolante) y puntos
+curve(polyAjuste,add=T, lty=3) #lty=3 puntos
+```
+
+```{r}
+require(PolynomF)
+xi=c(0,.5,1,2,3,4)
+yi=c(0,.93,1,1.1,1.15,1.2)
+polyAjuste = poly.calc(xi,yi)
+polyAjuste
+plot(xi,yi, pch = 19, cex=1.5, col= "red")
+curve(polyAjuste,add=T,lty=3, lwd=5)
+```
+
+
+
+
+

@@ -1,0 +1,64 @@
+---
+title: "Punto 1 TALLER INTERPOLACIÓN"
+
+output: html_notebook
+---
+###Johan Daniel Ortegon Parra
+PUNTO 1: 
+Dados $n+1$ nodos distintos, demuestre que el polinomio interpolante es único
+
+Sean $x_1,...,x_{n+1}$ numeros diferentes al igual que $y_1,....,y_{n+1}$ Entonces existe un unico polinomio $P$ de grado $< n$
+tal que $P(x_j) = Y_j$
+
+Demostracion:
+
+Denotemos por $c0,....,cn$ a los coeficientes del polinomio $P(x): C_0+C_1X+C_2X^{2}+...+C_nX^{n}$
+Sustituyendo $X = X1$, luego $X = X2$, etc., hasta $X = Xn$ obtenemos el siguiente sistema deecuaciones lineales para las incógnitas:
+$c_0,....,c_n:$
+$c_0+x_1*c_1+x^{2}_1c_2+. . .+x^{n}_1c_{n}=y_1$
+
+
+$.............................................$
+
+
+$.............................................$
+
+
+$.............................................$
+
+
+$.............................................$
+
+
+$c_0+x_n*c_1+x^{2}_nc_2+. . .+x^{n}_nc_{n}=y_n$
+
+La matriz de este sistema es la matriz de $\textbf{Vandermonde}$ asociada a los puntos $x_1,...,x_{n+1}$ 
+y el sistema se escribe brevemente en la forma $V(x_1,...,x_{n+1})c = y$
+Donde $C = [c_{k-1}]^{n}_{k=1}$ es el vector de los coeficientes incógnitos. El determite del sistema es el determinante de Vandermonde y se calcula como el producto de todas las diferencias $X_j - X_i$ donde $i < j:$
+
+
+$detV(x_1,...,x_{n+1}) = \prod_{j,k(1,....n)}(x_k-x_j)$
+
+Como los puntos $x_1,...,x_{n+1}$ son diferentes por pares, todas estas diferencias $x_k-x_j$ son distintas de cero, y el $\textbf{determinante es distinto de cero}$ (Recordado una de las propiedades de los determianantes). Por lo tanto el sistema de ecuacioneslineales tiene una solución única, esto es, existe un único polinomio que cumple con dichas propiedades.
+
+[CREDITOS: LINK DE DONDE SE EXTRÁJO ESTA INFORMACIÓN](http://esfm.egormaximenko.com/numerical_methods/polynomial_interpolation_theorem_with_Vandermonde_es.pdf)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

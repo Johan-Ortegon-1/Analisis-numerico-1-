@@ -1,0 +1,50 @@
+---
+title: "Punto 2 TALLER INTERPOLACIÓN"
+
+output: html_notebook
+---
+###Johan Daniel Ortegon Parra
+###Ricardo Riscanevo
+2. Considere el comportamiento de gases no ideales se describe a menudo con la ecuación virial de estado.
+los siguientes datos para el nitrógeno :
+T(K) 100 200 300 400 450 500 600
+B(cm3/mol) -160 -35 -4.2 9.0 ? 16.9 21.3
+     160,35,4.2,9.0, ???, 16.9, 21.3
+a. Determine un polinomio interpolante para este caso(escriba el polinomio)
+c. Grafique los puntos y el polinomio que ajusta
+d. Utilice la interpolación de Lagrange y escriba el polinomio interpolante
+e. Grafique los puntos y el polinomio interpolante de Lagrange
+g. Compare su resultado con la serie truncada (modelo teórico), cuál de las tres
+aproximaciones es mejor por qué?
+DETERMINAR EL POLINOMIO POR LOS METODOS DE TAYLOR, POLINOMICA, LAGRANGE, LAGRENGE MODIFICADO, NEWTON 
+Links de ayuda: 
+[CREDITOS: LINK DE DONDE SE EXTRÁJO ESTA INFORMACIÓN](https://rpubs.com/aaronsc32/lagrangian-polynomial-interpolation-r)
+```{r}
+library(PolynomF)
+
+Te=c(100,200,300,400,500,600)
+Te
+B=c(-160,-35,-4.2,9.0,16.9,21.3)
+B
+datx = Te[1:5]; daty = B[1:5]
+polinomioLagreange = poly.calc(datx,daty)#POLINOMIO POR EL METODO DE LAGRANGE
+polinomioLagreange
+plot(Te,B,col="red", xlim=c(0,700), ylim=c(-200,50))
+par(new=TRUE)
+curve(polinomioLagreange,add=T, xlim=c(0,700), ylim=c(-200,50))
+eval(polinomioLagreange(450))
+
+```
+[CREDITOS: LINK DE DONDE SE EXTRÁJO ESTA INFORMACIÓN](https://tecdigital.tec.ac.cr/revistamatematica/Secciones/Matematica_Algoritmos_Programacion/RevistaDigital_WMora_V16_n1_2015/RevistaDigital_WMora_V16_n2_2015.pdf)
+
+b. Utilizando el resultado anterior calcule el segundo y tercer coeficiente virial a 450K
+f. ¿Cuál es el segundo y tercer coeficiente virial a 450K?. con el método de Lagrange
+Respuesta: Dado el polinomio extraido con Lagrange: $-520.1 + 5.406917*x - 0.02174708*x^2 + 3.955833e-05*x^3 - 2.679167e-08*x^4$
+
+El segundo coeficiente virial corresponde a: $5.406917$
+
+El tercer coeficiente virial corresponde a: $-0.02174708$
+
+
+
+

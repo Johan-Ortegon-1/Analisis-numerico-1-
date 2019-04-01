@@ -1,0 +1,254 @@
+---
+title: "Mano entropica"
+output:
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r}
+library(PolynomF)
+library(BB)
+x=c(14.65, 14.71, 14.6, 14.8, 15.2, 15.6, 15.7, 17.0, 17.6, 17.52, 17.3, 16.8, 15.4, 14.83, 14.4, 14.5, 15.0, 15.1, 15.0, 14.9, 14.6, 14.3, 14.0, 13.9, 13.8, 13.5, 13.1, 13.0, 13.3, 13.2, 13.1, 12.9, 12.4, 11.9, 11.7, 11.6, 11.3, 10.9, 10.7, 10.6, 10.6, 10.1, 9.7, 9.4, 9.3, 9.6, 9.9, 10.1, 10.2, 10.3, 10.0, 9.50, 9.10, 8.6, 7.5, 7.0, 6.7, 6.6, 7.70, 8.00, 8.10, 8.40,9.20, 9.30, 10, 10.2, 10.3)
+
+y=c(14.7, 14.33, 13.4, 12.33, 11.0, 10.5, 10.22, 8.20, 7.10, 6.70, 6.60, 6.80, 8.30, 8.80, 9.30, 8.80, 6.30, 5.50, 5.00, 4.70, 4.60, 4.50, 4.90, 5.40, 5.80, 6.90, 8.20, 7.60, 5.80, 4.50, 4.30, 3.90, 4.20, 5.70, 7.00, 7.90, 8.20, 7.30, 6.70, 5.50, 5.10, 4.60, 4.7, 5.0, 5.5, 7.2, 7.8, 8.60, 9.40, 10.0, 10.7, 11.0, 10.7, 9.9, 9.0, 9.1, 9.3, 9.7, 11.7, 12.3, 12.5, 13.0,13.91, 14.9, 16, 16.4, 16.8)
+
+
+#Medicion de la entropia por Cuadrantes de la mano, ir haciendo fases de entropia para cada dedo 
+menor_coordenada_x = 9999999
+menor_coordenada_y = 9999999
+for(i in 1:length(x))
+{
+  if(x[i] < menor_coordenada_x)
+  {
+    menor_coordenada_x = x[i]
+  }
+}
+
+for(j in 1:length(y))
+{
+  if(y[j] < menor_coordenada_y)
+  {
+    menor_coordenada_y = y[j]
+  }
+}
+cat("menor coordenada x: ", menor_coordenada_x,"\n")
+cat("menor coordenada y: ", menor_coordenada_y,"\n")
+
+mayor_coordenada_x = -99999999
+mayor_coordenada_y = -99999999
+for(i in 1:length(x))
+{
+  if(x[i] > mayor_coordenada_x)
+  {
+    mayor_coordenada_x = x[i]
+  }
+}
+
+for(j in 1:length(y))
+{
+  if(y[j] > mayor_coordenada_y)
+  {
+    mayor_coordenada_y = y[j]
+  }
+}
+
+cat("mayor coordenada x: ", mayor_coordenada_x,"\n")
+cat("mayor coordenada y: ", mayor_coordenada_y,"\n")
+
+##MEDICION DE LAS 5 REGIONES ENTROPICAS
+
+rango_region_y = ((mayor_coordenada_y-menor_coordenada_y)/2)+menor_coordenada_y
+cat("Rango entropico Y: ",rango_region_y,"\n")
+rango_region_x = ((mayor_coordenada_x-menor_coordenada_x)/2)+menor_coordenada_x
+cat("Rango entropico x: ",rango_region_x,"\n")
+
+##CRECION DE LAS 5 REGION ENTROPICAS
+probabilidad_region_1 = 0
+region1x1 = menor_coordenada_x
+region1x2 = rango_region_x
+region1y1 = menor_coordenada_y
+region1y2 = rango_region_y
+puntos_region_1 = 0
+
+probabilidad_region_2 = 0
+region2x1 = rango_region_x
+region2x2 = mayor_coordenada_x
+region2y1 = menor_coordenada_y
+region2y2 = rango_region_y
+puntos_region_2 = 0
+
+probabilidad_region_3 = 0
+region3x1 = menor_coordenada_x
+region3x2 = rango_region_x
+region3y1 = rango_region_y
+region3y2 = mayor_coordenada_y
+puntos_region_3 = 0
+
+probabilidad_region_4 = 0
+region4x1 = rango_region_x
+region4x2 = mayor_coordenada_x
+region4y1 = rango_region_y
+region4y2 = mayor_coordenada_y
+puntos_region_4 = 0
+
+total_puntos = length(x)
+contador_nueva_seccion = 0
+contador_historial_entropias = 1 
+entropia = 0.0
+probabilidad_region <- vector()
+historial_entropias <- vector()
+
+historial_probabilidades_R1 = NULL
+historial_probabilidades_R2 = NULL
+historial_probabilidades_R3 = NULL
+historial_probabilidades_R4 = NULL
+for(i in 1:length(x))
+{
+  if(x[i] < rango_region_x && y[i] > rango_region_y)#PARA LA REGION 1
+  {
+    puntos_region_1 = puntos_region_1+1
+  }
+  if(x[i] > rango_region_x && y[i] > rango_region_y)#PARA LA REGION 2
+  {
+    puntos_region_2 = puntos_region_2+1
+  }
+  if(x[i] < rango_region_x && y[i] < rango_region_y)#PARA LA REGION 3
+  {
+    puntos_region_3 = puntos_region_3+1
+  }
+  if(x[i] > rango_region_x && y[i] < rango_region_y)#PARA LA REGION 4
+  {
+    puntos_region_4 = puntos_region_4+1
+  }
+  contador_nueva_seccion = contador_nueva_seccion+1
+  if(contador_nueva_seccion == 10 || i == length(x))
+  {
+    total_puntos = i
+    cont_reserva = 1
+    probabilidad_region_1 = puntos_region_1/total_puntos
+    probabilidad_region_2 = puntos_region_2/total_puntos
+    probabilidad_region_3 = puntos_region_3/total_puntos
+    probabilidad_region_4 = puntos_region_4/total_puntos
+    
+    historial_probabilidades_R1[contador_historial_entropias] = probabilidad_region_1
+    historial_probabilidades_R2[contador_historial_entropias] = probabilidad_region_2
+    historial_probabilidades_R3[contador_historial_entropias] = probabilidad_region_3
+    historial_probabilidades_R4[contador_historial_entropias] = probabilidad_region_4
+    
+    if(probabilidad_region_1 > 0)
+    {
+      probabilidad_region[cont_reserva] = probabilidad_region_1
+      cont_reserva = cont_reserva+1
+    }
+    if(probabilidad_region_2 > 0)
+    {
+      probabilidad_region[cont_reserva] = probabilidad_region_2
+      cont_reserva = cont_reserva+1
+    }
+    if(probabilidad_region_3 > 0)
+    {
+      probabilidad_region[cont_reserva] = probabilidad_region_3
+      cont_reserva = cont_reserva+1
+    }
+    if(probabilidad_region_4 > 0)
+    {
+      probabilidad_region[cont_reserva] = probabilidad_region_4
+      cont_reserva = cont_reserva+1
+    }
+    entropia = -sum(probabilidad_region*log10(probabilidad_region))
+    cat("Puntos de la region: ",puntos_region_4,"\n")
+    cat("Probabilidad de la region: ",probabilidad_region[4],"\n")
+    cat("entropia: ",entropia,"\n")
+    historial_entropias[contador_historial_entropias] = entropia
+    contador_historial_entropias = contador_historial_entropias+1
+    contador_nueva_seccion = 0
+    probabilidad_region = NULL
+  }
+  
+}
+historial_entropias
+numeros_eje_x = length(x)/10
+grafica_eje_x = NULL
+for(i in 1:numeros_eje_x)
+{
+  grafica_eje_x[i] = i*10
+}
+
+if(grafica_eje_x[numeros_eje_x] != length(x))
+{
+  total_puntos = length(x)
+  grafica_eje_x[i+1] = length(x)
+  probabilidad_region_1 = puntos_region_1/total_puntos
+  probabilidad_region_2 = puntos_region_2/total_puntos
+  probabilidad_region_3 = puntos_region_3/total_puntos
+  probabilidad_region_4 = puntos_region_4/total_puntos
+    
+  historial_probabilidades_R1[i+1] = probabilidad_region_1
+  historial_probabilidades_R2[i+1] = probabilidad_region_2
+  historial_probabilidades_R3[i+1] = probabilidad_region_3
+  historial_probabilidades_R4[i+1] = probabilidad_region_4
+}
+grafica_eje_x
+
+datosx = grafica_eje_x[1:6]
+datosy = historial_entropias[1:6]
+
+polinomio_interpolante = poly.calc(datosx,datosy)
+polinomio_interpolante
+plot(x,y,col="green", xlim=c(menor_coordenada_x,mayor_coordenada_x), ylim=c(menor_coordenada_y,mayor_coordenada_y))
+abline(h = ((mayor_coordenada_y-menor_coordenada_y)/2)+menor_coordenada_y)
+abline(v = ((mayor_coordenada_x-menor_coordenada_x)/2)+menor_coordenada_x)
+
+plot(grafica_eje_x,historial_entropias, main = "Historial de entropía",xlab = "Cantidad de datos Ingresados", ylab = "Niveles de entropía")
+par(new = TRUE)
+curve(polinomio_interpolante, add=T, col = "yellow")
+datosy = historial_probabilidades_R1[1:6]
+polinomio_interpolanteR1 = poly.calc(datosx,datosy)
+datosy = historial_probabilidades_R2[1:6]
+polinomio_interpolanteR2 = poly.calc(datosx,datosy)
+datosy = historial_probabilidades_R3[1:6]
+polinomio_interpolanteR3 = poly.calc(datosx,datosy)
+datosy = historial_probabilidades_R4[1:6]
+polinomio_interpolanteR4 = NULL
+polinomio_interpolanteR4 = poly.calc(datosx,datosy)
+polinomio_interpolanteR4
+historial_probabilidades_R1
+historial_probabilidades_R2
+historial_probabilidades_R3
+historial_probabilidades_R4
+
+plot(grafica_eje_x,historial_probabilidades_R1,col = "black", main = "Probabilidades de la Región 1",xlab = "Cantidad de datos Ingresados", ylab = "Probabilidad de la region")
+par(new=TRUE)
+curve(polinomio_interpolanteR1,add=T,col = "black")
+plot(grafica_eje_x,historial_probabilidades_R2,col = "blue", main = "Probabilidades de la Región 2",xlab = "Cantidad de datos Ingresados", ylab = "Probabilidad de la region")
+par(new=TRUE)
+curve(polinomio_interpolanteR2,add=T,col = "black")
+plot(grafica_eje_x,historial_probabilidades_R3,col = "green", main = "Probabilidades de la Región 3",xlab = "Cantidad de datos Ingresados", ylab = "Probabilidad de la region")
+par(new=TRUE)
+curve(polinomio_interpolanteR3,add=T,col = "black")
+plot(grafica_eje_x,historial_probabilidades_R4,col = "red", main = "Probabilidades de la Región 4",xlab = "Cantidad de datos Ingresados", ylab = "Probabilidad de la region")
+par(new=TRUE)
+curve(polinomio_interpolanteR4,add=T,col = "black")
+
+
+cat("cantidad de puntos R1:", puntos_region_1," Con una probabilidad: ",probabilidad_region_1,"\n")
+cat("cantidad de puntos R2:", puntos_region_2," Con una probabilidad: ",probabilidad_region_2,"\n")
+cat("cantidad de puntos R3:", puntos_region_3," Con una probabilidad: ",probabilidad_region_3,"\n")
+cat("cantidad de puntos R4:", puntos_region_4," Con una probabilidad: ",probabilidad_region_4,"\n")
+#Medicion de la entropia por rangos de la variacion de las pendientes, ir haciendo fases de entropia para cada dedo 
+
+#Medicion de la entropia por rangos de distancias euclidianas, ir haciendo fases de entropia para cada dedo 
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
